@@ -4,7 +4,7 @@
 
 # 概述
 
-- JavaScript 的一个非常常见的用途是**通过[文档对象模型 API](https://www.notion.so/DOM-b396d9cfd337430db8f422932af8187e?pvs=21) ，动态修改 HTML 和 CSS**
+- JavaScript 的一个非常常见的用途是**通过[文档对象模型 API](https://www.notion.so/b396d9cfd337430db8f422932af8187e?pvs=21) ，动态修改 HTML 和 CSS**
     - 因此需要注意代码顺序，如果 JavaScript 先于要修改的 HTML 和 CSS 加载和运行，则可能发生错误 （结合[脚本调用](https://www.notion.so/JS-7a107338dcf64c6d8989a7561113958b?pvs=21)部分理解）
 - JavaScript 中一切都是对象。对象是存储在单个分组中的相关功能的集合
 
@@ -87,6 +87,75 @@
 
 - 增删元素 `push()` `pop()` (作用于数组结尾)  、`unshift()` `shift()` (作用于数组开头)
 - 取数组中随机元素`randomValueFromArray()`
+
+## 事件
+
+- 检查元素的属性 `getAttribute(name)`
+- 设置元素的属性`setAttribute(name, value)`
+    - 文本属性`textContent` 直接赋值就可
+
+### 添加监听器 `EventTarget.addEventListener()`
+
+- 常用的参数列表为`(type, listener)`
+    - `type`事件类型：`"click"、"mouseover"、"keydown"`等等
+    - `listener` ：一个实现了 `EventListener` 接口的对象，或者是一个函数
+- 移除监听器 `removeEventListener`
+
+### 事件对象
+
+表示为`event`、`evt` 或 `e` ，被自动传递给事件处理函数，以提供额外的功能和信息
+
+- 大多数事件对象有**与该特定类型的事件相关的额外属性**（具体使用时查询），如事件对象 `e` 的 `target` 属性始终是事件刚刚发生的元素的引用
+
+### 事件冒泡
+
+事件从**最内层元素起**冒泡而出（子元素→父元素）
+
+- `stopPropagation()` 防止事件向任何其他元素传递
+- 例
+    
+    ```jsx
+    video.addEventListener("click", (event) => {
+      **event.stopPropagation();**
+      video.play();
+    });
+    
+    box.addEventListener("click", () => box.classList.add("hidden"));
+    ```
+    
+
+### 事件捕获
+
+事件从**最外层元素起**直到达到目标（父元素→子元素）
+
+- 默认是禁用的，需要在 `addEventListener()` 的 `capture` 选项中启用
+
+### 事件委托
+
+当想在用户与子元素中的任一个互动时运行一些代码时，我们在它们的父元素上设置事件监听器，**让发生在子元素身上的事件冒泡到它们的父元素上**，而不必在每个子元素上单独设置事件监听器
+
+- 关键：使用 `event.target` 来获取事件的目标元素（也就是子元素，获取父元素使用`event.currentTarget`）
+
+## 循环
+
+### `for...in` VS `for...of`
+
+`for...in` 循环遍历的结果是数组元素的下标，而 `for...of` 遍历的结果是元素的值
+
+```jsx
+let arr = [3, 5, 7];
+arr.foo = "hello";
+
+for (let i in arr) {
+  console.log(i); // 输出 "0", "1", "2", "foo"
+}
+
+for (let i of arr) {
+  console.log(i); // 输出 "3", "5", "7"
+}
+
+// 注意 for...of 的输出没有出现 "hello"
+```
 
 # 调试
 
